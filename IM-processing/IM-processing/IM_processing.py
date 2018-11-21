@@ -1,9 +1,20 @@
 import pyedflib
 import numpy as np
+import matplotlib.pyplot as plt
 
-f = pyedflib.EdfReader("C:\\Users\\BioLab\\Desktop\\GitHub\\Motor-imagery-processing\\EEG_coleta\\FHILLIPE-E.edf")
-n = f.signals_in_file
-signal_labels = f.getSignalLabels()
-sigbufs = np.zeros((n, f.getNSamples()[0]))
-for i in np.arange(n):
-    sigbufs[i, :] = f.readSignal(i)
+class SinalVoluntario():
+
+    def __init__(self, nome):
+        self.nome = nome
+
+    def CarregaEEG(self):
+        eegFile = pyedflib.EdfReader("EEG_coleta\\"+self.nome+".edf")
+        n = eegFile.signals_in_file
+        signal_labels = eegFile.getSignalLabels()
+        eegSinal = np.zeros((n, eegFile.getNSamples()[0]))
+        for i in np.arange(n):
+            eegSinal[i, :] = eegFile.readSignal(i)
+        return eegSinal
+
+
+
