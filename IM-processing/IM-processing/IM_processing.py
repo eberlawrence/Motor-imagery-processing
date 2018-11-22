@@ -15,6 +15,3 @@ class SinalVoluntario():
         for i in np.arange(n):
             eegSinal[i, :] = eegFile.readSignal(i)
         return eegSinal
-
-
-
