@@ -31,23 +31,26 @@ sEEG, tEEG = sVoluntario.CarregaEEG();
 count = 0
 for i, v in enumerate(tEEG):
     count = count + 1
-    if v > 10 and count < 5000:
+    if v > 10 and count < 4500:
         tEEG[i] = 8 
     elif v > 10:
         count = 0
+
+
 count2 = 0
+count3 = 0
 flag = False
 for i, v in enumerate(tEEG):
     count2 = count2 + 1
     if v > 10  and count2 > 8500:
-        j = i
-        flag = True
+        j = i 
+        count2 = 0
+    elif v > 10 and count2 > 17000:
+        tEEG[j] = 8
         count2 = 0
     elif v > 10:
-        flag = False
         count2 = 0
-    elif v > 10 and flag == True:
-        tEEG[j] = 8
+
 
         
 
