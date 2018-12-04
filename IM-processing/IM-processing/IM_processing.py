@@ -17,10 +17,9 @@ class SinalVoluntario():
         triggerSinal = eegSinal[19].copy()
         eegSinal = np.delete(eegSinal, 19, 0)
         return eegSinal, triggerSinal
+    
+    
     def CarregaEMG(self):
-
-
-
         pass
 
            
@@ -54,3 +53,9 @@ for i, v in enumerate(tEEG):
 t = np.array(range(len(tEEG)))/1024
 plt.plot(tEEG)
 plt.show()
+
+for i, v in enumerate(sEEG):
+    plt.subplot(20,1,i+1)
+    plt.plot(sEEG[i])
+plt.show()
+
