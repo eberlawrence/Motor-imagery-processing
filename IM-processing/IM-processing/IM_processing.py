@@ -26,7 +26,7 @@ class SinalVoluntario():
            
 
 
-sVoluntario = SinalVoluntario("FHILLIPE-E")
+sVoluntario = SinalVoluntario("FHILLIPE-I")
 sEEG, tEEG = sVoluntario.CarregaEEG();
 count = 0
 for i, v in enumerate(tEEG):
@@ -35,29 +35,21 @@ for i, v in enumerate(tEEG):
         tEEG[i] = 8 
     elif v > 10:
         count = 0
-
-
-count2 = 0
-count3 = 0
-flag = False
 for i, v in enumerate(tEEG):
-    count2 = count2 + 1
-    if v > 10  and count2 > 8500:
-        j = i 
-        count2 = 0
-    elif v > 10 and count2 > 17000:
-        tEEG[j] = 8
-        count2 = 0
-    elif v > 10:
-        count2 = 0
-
-
-        
-
+    more = False
+    less = False
+    if v > 10:
+        if not any(tEEG[i - 8500 : i] > 10):
+            less = True
+        if not any(tEEG[i + 1 : i + 8500] > 10):
+            more = True
+        if more and less:
+            tEEG[i] = 8
+            
 
 
 
-
+            
 
 t = np.array(range(len(tEEG)))/1024
 plt.plot(tEEG)
