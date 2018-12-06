@@ -35,16 +35,17 @@ class SinalVoluntario():
         return eegSinal, triggerSinal    
     
     def CarregaEMG(self):
-        dataEMG = open("EMG_coleta\\"+self.nome+"1.txt")
-        rl = dataEMG.readline()
+        dataEMG = open("EMG_coleta\\"+self.nome+"3.txt")
+        rl = dataEMG.readlines()
+        dataEMG.close()
         k = 0
-        while rl != '[Dados]\n':
-            rl = dataEMG.readline()
-            k = k+1
         c1, c2, c3 = [], [], []
-        while k < 364800:
-            rl = dataEMG.readline() 
-            a, b, c = rl.split()
+
+        while rl[k] != '[Dados]\n':
+            k = k + 1
+        k = k + 1
+        while k < len(rl) - 1:
+            a, b, c = rl[k].split()
             c1.append(float(a))
             c2.append(float(b))
             c3.append(float(c))
