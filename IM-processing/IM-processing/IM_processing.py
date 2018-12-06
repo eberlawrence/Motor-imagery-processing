@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from OpenFile import SinalVoluntario
 
 sVoluntario = SinalVoluntario("FHILLIPE-E")
-#sEEG, tEEG = sVoluntario.CarregaEEG()
+sEEG, tEEG = sVoluntario.CarregaEEG()
 EMG = sVoluntario.CarregaEMG()
 plt.plot(EMG[0])
 plt.plot(EMG[1],color='g')

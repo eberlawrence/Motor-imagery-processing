@@ -35,7 +35,7 @@ class SinalVoluntario():
     
     def CarregaEMG(self):
         M = [[], [], []]
-        for i in range(4):
+        for i in range(5):
             dataEMG = open("EMG_coleta\\"+self.nome+str(i+1)+".txt")
             rl = dataEMG.readlines()
             dataEMG.close()
