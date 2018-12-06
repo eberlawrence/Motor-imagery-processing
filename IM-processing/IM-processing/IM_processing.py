@@ -16,46 +16,60 @@ class SinalVoluntario():
             eegSinal[i, :] = eegFile.readSignal(i)
         triggerSinal = eegSinal[19].copy()
         eegSinal = np.delete(eegSinal, 19, 0)
-        return eegSinal, triggerSinal
-    
+        count = 0
+        for i, v in enumerate(triggerSinal):
+            count = count + 1
+            if v > 10 and count < 4500:
+                triggerSinal[i] = 8 
+            elif v > 10:
+                count = 0
+        for i, v in enumerate(triggerSinal):
+            more, less = False, False
+            if v > 10:
+                if not any(triggerSinal[i - 8500 : i] > 10):
+                    less = True
+                if not any(triggerSinal[i + 1 : i + 8500] > 10):
+                    more = True
+                if more and less:
+                    triggerSinal[i] = 8
+        return eegSinal, triggerSinal    
     
     def CarregaEMG(self):
-        pass
+        dataEMG = open("EMG_coleta\\"+self.nome+"1.txt")
+        rl = dataEMG.readline()
+        k = 0
+        while rl != '[Dados]\n':
+            rl = dataEMG.readline()
+            k = k+1
+        c1, c2, c3 = [], [], []
+        while k < 364800:
+            rl = dataEMG.readline() 
+            a, b, c = rl.split()
+            c1.append(float(a))
+            c2.append(float(b))
+            c3.append(float(c))
+            k = k + 1
+        return np.array([np.array(c1), np.array(c2), np.array(c3)])
 
            
 
 
-sVoluntario = SinalVoluntario("FHILLIPE-I")
-sEEG, tEEG = sVoluntario.CarregaEEG();
-count = 0
-for i, v in enumerate(tEEG):
-    count = count + 1
-    if v > 10 and count < 4500:
-        tEEG[i] = 8 
-    elif v > 10:
-        count = 0
-for i, v in enumerate(tEEG):
-    more = False
-    less = False
-    if v > 10:
-        if not any(tEEG[i - 8500 : i] > 10):
-            less = True
-        if not any(tEEG[i + 1 : i + 8500] > 10):
-            more = True
-        if more and less:
-            tEEG[i] = 8
-            
-
+sVoluntario = SinalVoluntario("FHILLIPE-E")
+#sEEG, tEEG = sVoluntario.CarregaEEG()
+EMG = sVoluntario.CarregaEMG()
+plt.plot(EMG[0])
+plt.plot(EMG[2],color='red')
+plt.show()
 
 
             
 
-t = np.array(range(len(tEEG)))/1024
-plt.plot(tEEG)
-plt.show()
-
-for i, v in enumerate(sEEG):
-    plt.subplot(20,1,i+1)
-    plt.plot(sEEG[i])
-plt.show()
+#t = np.array(range(len(tEEG)))/1024
+#plt.plot(t, tEEG)
+#plt.show()
+    
+#for i, v in enumerate(sEEG):
+#    plt.subplot(10,1,i+1)
+#    plt.plot(sEEG[i])
+#plt.show()
 
