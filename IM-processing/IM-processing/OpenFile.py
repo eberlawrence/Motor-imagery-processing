@@ -31,10 +31,11 @@ class SinalVoluntario():
                     more = True
                 if more and less:
                     triggerSinal[i] = 8
-        return eegSinal, triggerSinal    
+        return eegSinal, (triggerSinal - 8)    
     
     def CarregaEMG(self):
-        M = [[], [], []]
+        M, N = [[], []], []
+        
         for i in range(5):
             dataEMG = open("EMG_coleta\\"+self.nome+str(i+1)+".txt")
             rl = dataEMG.readlines()
@@ -52,8 +53,8 @@ class SinalVoluntario():
                 k = k + 1
             M[0].extend(c1)
             M[1].extend(c2)
-            M[2].extend(c3)
-        return np.array(M)
+            N.extend(c3)
+        return np.array(M), np.array(N)
 
            
 
