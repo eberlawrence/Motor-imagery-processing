@@ -12,7 +12,7 @@ class Processing():
         #self.trigger = trigger
         pass
 
-    def BandPassFilter(self, data, Fpa=1, Fpb=80, fs=1024, order=5):
+    def BandPassFilter(self, data, Fpa=1, Fpb=60, fs=1024, order=5):
         '''
         # Detalhes do sinal e parâmetros para a construção dos filtros #       
         fs          # Frequência de amostragem do sinal.                      Default -> 1024 Hz

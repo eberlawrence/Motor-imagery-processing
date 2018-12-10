@@ -7,7 +7,7 @@ from Tools import Processing
 
 sVoluntario = SinalVoluntario("FHILLIPEI")
 sEEG, tEEG = sVoluntario.CarregaEEG()
-sEMG, tEMG = sVoluntario.CarregaEMG()
+#sEMG, tEMG = sVoluntario.CarregaEMG()
 
 
 #tEMG = Tools.Amplificar(tEMG, 500)
@@ -18,19 +18,22 @@ sEMG, tEMG = sVoluntario.CarregaEMG()
 
 P = Processing()
 tEEG = P.Amplificar(tEEG, 50)
-filtroEEG = P.BandPassFilter(sEEG[10])
-filtro60Hz = P.NotchFilter(sEEG[0])
 
-P.FFT(sEEG[0], tEEG)
-P.FFT(filtroEEG, tEEG)
+s = sEEG[15]
+
+filtroEEG = P.BandPassFilter(s)
+filtro60Hz = P.NotchFilter(s)
+
+#P.FFT(s, tEEG)
+#P.FFT(filtroEEG, tEEG)
 P.FFT(filtro60Hz, tEEG)
 
+plt.show()
 
 
-
-plt.plot(sEEG[0])
-plt.plot(filtroEEG,color='g')
-plt.plot(tEEG,color='r')
+#plt.plot(sEEG[0])
+#plt.plot(filtroEEG,color='g')
+#plt.plot(tEEG,color='r')
 plt.show()
             
 
