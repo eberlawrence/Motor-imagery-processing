@@ -12,7 +12,7 @@ class Processing():
         #self.trigger = trigger
         pass
 
-    def BandPassFilter(self, data, Fpa=1, Fpb=50, fs=1024, order=5):
+    def BandPassFilter(self, data, Fpa=1, Fpb=80, fs=1024, order=5):
         '''
         # Detalhes do sinal e parâmetros para a construção dos filtros #       
         fs          # Frequência de amostragem do sinal.                      Default -> 1024 Hz
@@ -27,19 +27,26 @@ class Processing():
         passaBaixa = signal.filtfilt(b3, a3, passaAlta) # Passa um filtro PASSA-BAIXA no SINAL retificado
         return passaBaixa
 
-    def NotchFilter(self, data, fc=60, fs=1024, order=5):
+    def NotchFilter(self, data, fc=60, fs=1024, order=5, Q=1):
+        # Frequência normalizada:
+        wn = fc/(fs/2) # Para o filtro NOTCH 60 Hz
+        b11, a11 = signal.iirnotch(wn, Q) # Design notch filter - Fc = 60Hz
+        filtradoRede = signal.filtfilt(b11, a11, data) # Passa um filtro NOTCH no SINAL para remover 60Hz
+        return filtradoRede
 
-
-    def FFT(self, data, fs=1024):
+    def FFT(self, data, trigger, fs=1024, aux=True):
         # Number of samplepoints
         N = len(data)
+        t = np.array(range(N))/fs
         # sample spacing
         T = 1.0 / float(fs)
         x = np.linspace(0.0, N*T, N)
         yf = scipy.fftpack.fft(data)
         xf = np.linspace(0.0, 1.0/(2.0*T), N/2)
         plt.subplot(2,1,1)
-        plt.plot(np.array(range(N))/fs, data)
+        plt.plot(t, data)
+        if aux:
+            plt.plot(t, trigger)
         plt.subplot(2,1,2)
         plt.plot(xf, 2.0/N * np.abs(yf[:N//2]))
 

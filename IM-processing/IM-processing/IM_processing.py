@@ -18,11 +18,15 @@ sEMG, tEMG = sVoluntario.CarregaEMG()
 
 P = Processing()
 tEEG = P.Amplificar(tEEG, 50)
-df = pd.DataFrame(sEEG)
-filtroEEG = P.BandPassFilter(sEEG[0])
+filtroEEG = P.BandPassFilter(sEEG[10])
+filtro60Hz = P.NotchFilter(filtroEEG)
 
-P.FFT(sEEG[0])
-P.FFT(filtroEEG)
+P.FFT(sEEG[0], tEEG)
+P.FFT(filtroEEG, tEEG)
+P.FFT(filtro60Hz, tEEG)
+
+
+
 
 plt.plot(sEEG[0])
 plt.plot(filtroEEG,color='g')
