@@ -7,7 +7,7 @@ class SinalVoluntario():
         self.nome = nome
 
     def CarregaEEG(self):
-        eegFile = pyedflib.EdfReader("EEG_coleta\\"+self.nome+".edf")
+        eegFile = pyedflib.EdfReader("EEG_coleta\\f1\\"+self.nome+".edf")
         n = eegFile.signals_in_file
         signal_labels = eegFile.getSignalLabels()
         eegSinal = np.zeros((n, eegFile.getNSamples()[0]))

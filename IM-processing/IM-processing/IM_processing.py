@@ -5,7 +5,7 @@ from scipy import signal
 from OpenFile import SinalVoluntario
 from Tools import Processing
 
-sVoluntario = SinalVoluntario("FHILLIPE-E")
+sVoluntario = SinalVoluntario("FHILLIPEI")
 sEEG, tEEG = sVoluntario.CarregaEEG()
 sEMG, tEMG = sVoluntario.CarregaEMG()
 
@@ -19,7 +19,7 @@ sEMG, tEMG = sVoluntario.CarregaEMG()
 P = Processing()
 tEEG = P.Amplificar(tEEG, 50)
 filtroEEG = P.BandPassFilter(sEEG[10])
-filtro60Hz = P.NotchFilter(filtroEEG)
+filtro60Hz = P.NotchFilter(sEEG[0])
 
 P.FFT(sEEG[0], tEEG)
 P.FFT(filtroEEG, tEEG)
