@@ -16,13 +16,13 @@ sEMG, tEMG = sVoluntario.CarregaEMG()
 #plt.plot(tEMG,color='r')
 #plt.show()
 
-P = Processing(sEEG[0], tEEG)
-tEEG = P.Amplificar(50)
+P = Processing()
+tEEG = P.Amplificar(tEEG, 50)
 df = pd.DataFrame(sEEG)
-filtroEEG = P.BandPassFilter()
+filtroEEG = P.BandPassFilter(sEEG[0])
 
-
-
+P.FFT(sEEG[0])
+P.FFT(filtroEEG)
 
 plt.plot(sEEG[0])
 plt.plot(filtroEEG,color='g')
@@ -38,3 +38,8 @@ plt.show()
 #    plt.subplot(10,1,i+1)
 #    plt.plot(sEEG[i])
 #plt.show()
+
+
+
+
+
