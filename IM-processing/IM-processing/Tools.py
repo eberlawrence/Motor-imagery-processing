@@ -50,7 +50,6 @@ class Processing():
         plt.subplot(2,1,2)
         plt.plot(xf, 2.0/N * np.abs(yf[:N//2]))
 
-
     def Amplificar(self, data, X):
         S = list(data)
         amp = [*map(lambda x: x*X,list(S))] #amplificar o sinal retificado
