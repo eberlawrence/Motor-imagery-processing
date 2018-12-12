@@ -5,7 +5,8 @@ from scipy import signal
 from OpenFile import SinalVoluntario
 from Tools import Processing
 
-sVoluntario = SinalVoluntario("EBERI")
+sVoluntario = SinalVoluntario("EBERET")
+
 sEEG, tEEG = sVoluntario.CarregaEEG()
 #sEMG, tEMG = sVoluntario.CarregaEMG()
 
