@@ -54,3 +54,29 @@ class Processing():
         S = list(data)
         amp = [*map(lambda x: x*X,list(S))] #amplificar o sinal retificado
         return amp # amplifica um sinal em X vezes
+
+    def RemoveInicioColeta(TRIGGER, SINAL, J):
+        '''
+        Remove o inicio de coleta, o SINAL começa a partir da primeira borda de subida do TRIGGER. 
+        J = 0 -> retorna o SINAL
+        J = 1 -> retorna o TRIGGER
+        '''
+        ListaRemove = []
+        S = list(SINAL)
+        T = list(TRIGGER)
+        for i in T:
+            if i < 1.4:
+                ListaRemove.append(i)
+            if i > 1.4:
+                break        
+        DLista = int(len(ListaRemove))
+
+        if J == 0:
+            del S[:DLista]
+            S.extend(ListaRemove)
+            return S
+        elif J == 1:
+            del T[:DLista]
+            T.extend(ListaRemove)
+            return T
+        pass
