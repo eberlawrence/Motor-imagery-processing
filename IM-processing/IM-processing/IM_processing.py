@@ -5,11 +5,18 @@ from scipy import signal
 from OpenFile import SinalVoluntario
 from Tools import Processing
 
-sVoluntario = SinalVoluntario("FHILLIPEE")
+
+P = Processing()
+sVoluntario = SinalVoluntario("FHILLIPEI")
 
 sEEG, tEEG = sVoluntario.CarregaEEG()
 sEMG, tEMG = sVoluntario.CarregaEMG()
 
+plt.plot(sEMG[0])
+plt.plot(sEMG[1], color='g')
+plt.plot(P.Amplificar(tEMG,100),color='red')
+
+plt.show()
 
 #tEMG = Tools.Amplificar(tEMG, 500)
 #plt.plot(sEMG[0])
@@ -17,7 +24,6 @@ sEMG, tEMG = sVoluntario.CarregaEMG()
 #plt.plot(tEMG,color='r')
 #plt.show()
 
-P = Processing()
 tEEG = P.Amplificar(tEEG, 50)
 
 s = sEEG[0]
