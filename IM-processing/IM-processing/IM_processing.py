@@ -7,16 +7,12 @@ from Tools import Processing
 
 
 P = Processing()
-sVoluntario = SinalVoluntario("FHILLIPEI")
+sVoluntario = SinalVoluntario("FHILLIPEE")
 
 sEEG, tEEG = sVoluntario.CarregaEEG()
 sEMG, tEMG = sVoluntario.CarregaEMG()
 
-plt.plot(sEMG[0])
-plt.plot(sEMG[1], color='g')
-plt.plot(P.Amplificar(tEMG,100),color='red')
 
-plt.show()
 
 #tEMG = Tools.Amplificar(tEMG, 500)
 #plt.plot(sEMG[0])
@@ -31,11 +27,11 @@ s = sEEG[0]
 filtroEEG = P.BandPassFilter(s)
 filtro60Hz = P.NotchFilter(filtroEEG)
 
-#P.FFT(s, tEEG)
-#P.FFT(filtroEEG, tEEG)
+P.FFT(s, tEEG)
+P.FFT(filtroEEG, tEEG)
 P.FFT(filtro60Hz, tEEG)
 
-plt.show()
+
 
 
 #plt.plot(sEEG[10])
@@ -56,4 +52,11 @@ plt.show()
 
 
 
-
+plt.subplot(2,1,1)
+plt.plot(filtro60Hz)
+plt.plot(tEEG,color='red')
+plt.subplot(2,1,2)
+plt.plot(sEMG[0])
+plt.plot(sEMG[1])
+plt.plot(P.Amplificar(tEMG,100),color='red')
+plt.show()
