@@ -65,9 +65,9 @@ class Processing():
         S = list(SINAL)
         T = list(TRIGGER)
         for i in T:
-            if i < 1.4:
+            if i < 8:
                 ListaRemove.append(i)
-            if i > 1.4:
+            if i > 8:
                 break        
         DLista = int(len(ListaRemove))
 
