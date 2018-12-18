@@ -75,7 +75,7 @@ class Processing():
         flagMov = True
         tJ = int(4096)
         count = 0
-        while count < 100:
+        while count < 120:
             for i, v in enumerate(T):
                 if v > 10 and flagMov == True:
                     vetorMov.extend(S[i:i+tJ])
@@ -95,7 +95,7 @@ class Processing():
         sMov, sRep = self.Amostras(TriggerFinal, SINAL)
         AmostraMov, AmostraRep = [], []
         tJ = int(4096)
-        for T in range(100):
+        for T in range(120):
             AmostraMov.append(sMov[0:tJ])
             AmostraRep.append(sRep[0:tJ])
             del sMov[0:tJ]
@@ -148,14 +148,10 @@ class Processing():
             return wl
         pass
 
-    def DataFrameCarac(ListaDF, a, sRep=False):
-        # Concatena todos os valores RMS de todas as coletas de um mesmo canal
-        # Valor RMS de todas as 240 CONTRAÇÕES do CANAL 1 - COLETA 1
-        Atributo = pd.concat([VetorATRIBUTOS(ListaDF[0], ListaDF[1], a, sRep),VetorATRIBUTOS(ListaDF[5], ListaDF[6], a, sRep),VetorATRIBUTOS(ListaDF[10], ListaDF[11], a, sRep),VetorATRIBUTOS(ListaDF[15], ListaDF[16], a, sRep)], ignore_index=True)
-        
-      
-        # Cria um DATAFRAME para colocar todas as CARACTERÍSTICAS do SINAL - COLETA 1
+    def DataFrameCarac(self, TRIGGER, SINAL, a, sRep=False):
         FeaturesEEG = pd.DataFrame()
-        FeaturesEEG[a] = Atributo
+        for i in range(len(SINAL)):
+            atributo = self.VetorATRIBUTOS(TRIGGER, SINAL[i], a, sRep)
+            FeaturesEEG['CH'+str(i)+'_'+a] = atributo
 
-        return FeaturesEMG_C1, FeaturesEMG_C2
+        return FeaturesEEG

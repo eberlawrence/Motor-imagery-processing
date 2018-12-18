@@ -15,7 +15,7 @@ from Tools import Processing
 ##################################################################################################################################################################################
 
 P = Processing()
-sVoluntario = SinalVoluntario("FHILLIPEE")
+sVoluntario = SinalVoluntario("FHILLIPE-E")
 
 
 ##################################################################################################################################################################################
@@ -45,15 +45,10 @@ f_EEG, f_EMG = P.NotchFilter(pfEEG, 60, 1024), P.NotchFilter(pfEMG, 60, 2000)
 
 
 
-A, B = P.VetorDeAmostras(tEEG,f_EEG[0])
+#A, B = P.VetorDeAmostras(tEEG,f_EEG[0])
 
 
-
-F = Features(A[0])
-
-C = F.RMS()
-
-
+A = P.DataFrameCarac(tEEG, f_EEG, 'RMS')
 
 
 
