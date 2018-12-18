@@ -148,10 +148,11 @@ class Processing():
             return wl
         pass
 
-    def DataFrameCarac(self, TRIGGER, SINAL, a, sRep=False):
+    def DataFrameCarac(self, TRIGGER, SINAL, a, resp=None, sRep=False, flagResp=False):
         FeaturesEEG = pd.DataFrame()
         for i in range(len(SINAL)):
             atributo = self.VetorATRIBUTOS(TRIGGER, SINAL[i], a, sRep)
             FeaturesEEG['CH'+str(i)+'_'+a] = atributo
-
+        if flagResp == True:
+            FeaturesEEG['Resposta'] = resp
         return FeaturesEEG

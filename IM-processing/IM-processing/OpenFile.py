@@ -57,22 +57,20 @@ class SinalVoluntario():
             N.extend(c3)
         return np.array(M), np.array(N)
 
-    def CarregaRESP(self):        
-        M, N = [[], []], []        
+    def CarregaRESP(self):           
+        resp = []
         for i in range(6):
             dataRESP = open("Respostas\\"+self.nome+str(i+1)+"-Resposta.txt")
             rl = dataRESP.readlines()
             dataRESP.close()
             k = 0 
-            resp = []
-            while k < len(rl) - 1:
+            while k < len(rl):
                 if rl[k][0] == '[':
                     k = k + 1
                 else:
-                    resp.append(int(rl))
+                    resp.append(int(rl[k][0]))
                     k = k + 1
-            M[0].extend(resp)
-        return np.array(M)
+        return np.array(resp)
 
            
 

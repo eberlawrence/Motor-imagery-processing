@@ -8,6 +8,7 @@ import pandas as pd
 from scipy import signal
 from OpenFile import SinalVoluntario
 from Tools import Processing
+import seaborn as sns
 from TreinaValidacaoCruzada import TreinaValidacaoCruzada
 
 
@@ -20,7 +21,7 @@ sVoluntario = SinalVoluntario("FHILLIPE-E")
 
 
 ##################################################################################################################################################################################
-        ### Carregando os dados de EEG, EMG e Trigger ###
+        ### Carregando os dados de EEG, EMG, Trigger e Respostas ###
 ##################################################################################################################################################################################
 
 
@@ -45,16 +46,21 @@ pfEEG, pfEMG = P.BandPassFilter(sEEG, 1, 80, 1024), P.BandPassFilter(sEMG, 10, 5
 f_EEG, f_EMG = P.NotchFilter(pfEEG, 60, 1024), P.NotchFilter(pfEMG, 60, 2000)
 
 
-
-
-#A, B = P.VetorDeAmostras(tEEG,f_EEG[0])
-
+##################################################################################################################################################################################
+        ### Carrega DataFrame com os atributos extraídos do sinal EEG ###
+##################################################################################################################################################################################
 
 A = P.DataFrameCarac(tEEG, f_EEG, 'RMS')
 
 
+##################################################################################################################################################################################
+        ### Treina o classicador - Validação cruzada - 10Fold ###
+##################################################################################################################################################################################
 
-
+Val1 = TreinaValidacaoCruzada(A, resp)
+Val1.Parametros(mostraDivisao=False,group=False)
+print(Val1.matrizDeConfusao)
+print(Val1.tabelaDeClassificacao)
 
 
 

@@ -5,6 +5,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV, KFold, cross_val_score, cross_val_predict, StratifiedKFold, GroupKFold
 
 class TreinaValidacaoCruzada():
+
     def __init__(self, TABELASCarac, TABELASResp):
         self.TCarac = TABELASCarac
         self.TResp = TABELASResp
@@ -25,7 +26,7 @@ class TreinaValidacaoCruzada():
             kf = GroupKFold(n_splits=splits)
             kfTenFold = kf.split(self.TCarac, R, L3)            
         if group == False:
-            L3 = L1[:280].copy()
+            L3 = L1[:120].copy()
             kf = StratifiedKFold(n_splits=splits, shuffle=random)
             kfTenFold = kf.split(self.TCarac, R, L3)    
         self.grid_cv = GridSearchCV(SVC(),DicParametros, cv=kfTenFold)
