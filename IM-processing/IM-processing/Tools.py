@@ -3,6 +3,7 @@ from scipy import signal
 import pandas as pd
 import matplotlib.pyplot as plt
 import scipy.fftpack
+from FeaturesFunctions import Features
 
 
 class Processing():
@@ -62,7 +63,7 @@ class Processing():
         return amp # amplifica um sinal em X vezes
 
 
-    def Amostras(TriggerFinal, SINAL):
+    def Amostras(self, TriggerFinal, SINAL):
         '''
         Remove o tempo de repouso
         Retorna um vetor com todas as contrações. 
@@ -86,12 +87,12 @@ class Processing():
                     count += 1
         return vetorMov, vetorRep
 
-    def VetorDeAmostras(TriggerFinal, SINAL):
+    def VetorDeAmostras(self, TriggerFinal, SINAL):
         '''
         Retorna o vetor com os SINAIS DE CONTRAÇÃO separados.
         Contem uma lista com N listas. Cada lista N é uma janela de contração.
         '''
-        sMov, sRep = Amostras(TriggerFinal, SINAL)
+        sMov, sRep = self.Amostras(TriggerFinal, SINAL)
         AmostraMov, AmostraRep = [], []
         tJ = int(4096)
         for T in range(100):
@@ -101,45 +102,60 @@ class Processing():
             del sRep[0:tJ]
         return AmostraMov, AmostraRep
 
-    def VetorATRIBUTOS(TriggerFinal, SINAL, Atributo, sRep=False):
+    def VetorATRIBUTOS(self, TriggerFinal, SINAL, Atributo, sRep=False):
         '''
         Retorna um vetor com os valores RMS de cada SINAL DE CONTRAÇÃO. 
         Retorna como -Pandas.Series-
         '''
-        aMov, aRep = VetorDeAmostras(TriggerFinal, SINAL)
+        aMov, aRep = self.VetorDeAmostras(TriggerFinal, SINAL)
         ListaAtributos = []
+        F = Features()
+
         if sRep == False:
             A = aMov
         elif sRep == True:
             A = aRep
+
         if Atributo == 'RMS':
             for i, v in enumerate(A):
-                ListaAtributos.append(RMS(A[i]))
+                ListaAtributos.append(F.RMS(A[i]))
             rms = pd.Series(ListaAtributos)
             return rms 
         if Atributo == 'ZC':
             for i, v in enumerate(A):
-                ListaAtributos.append(ZC(np.array(A[i])))
+                ListaAtributos.append(F.ZC(np.array(A[i])))
             zc = pd.Series(ListaAtributos)
             return zc 
         if Atributo == 'VAR':
             for i, v in enumerate(A):
-                ListaAtributos.append(VAR(np.array(A[i])))
+                ListaAtributos.append(F.VAR(np.array(A[i])))
             var = pd.Series(ListaAtributos)
             return var 
         if Atributo == 'SSC':
             for i, v in enumerate(A):
-                ListaAtributos.append(SSC(np.array(A[i])))
+                ListaAtributos.append(F.SSC(np.array(A[i])))
             ssc = pd.Series(ListaAtributos)
             return ssc 
         if Atributo == 'MAV':
             for i, v in enumerate(A):
-                ListaAtributos.append(MAV(np.array(A[i])))
+                ListaAtributos.append(F.MAV(np.array(A[i])))
             mav = pd.Series(ListaAtributos)
             return mav 
         if Atributo == 'WL':
             for i, v in enumerate(A):
-                ListaAtributos.append(WL(np.array(A[i])))
+                ListaAtributos.append(F.WL(np.array(A[i])))
             wl = pd.Series(ListaAtributos)
             return wl
         pass
+
+    def DataFrameCarac(ListaDF, a, sRep=False):
+        # Concatena todos os valores RMS de todas as coletas de um mesmo canal
+        # Valor RMS de todas as 240 CONTRAÇÕES do CANAL 1 - COLETA 1
+        Atributo = pd.concat([VetorATRIBUTOS(ListaDF[0], ListaDF[1], a, sRep),VetorATRIBUTOS(ListaDF[5], ListaDF[6], a, sRep),VetorATRIBUTOS(ListaDF[10], ListaDF[11], a, sRep),VetorATRIBUTOS(ListaDF[15], ListaDF[16], a, sRep)], ignore_index=True)
+        
+      
+        # Cria um DATAFRAME para colocar todas as CARACTERÍSTICAS do SINAL - COLETA 1
+        FeaturesEEG = pd.DataFrame()
+        FeaturesEEG[a] = Atributo
+
+        return FeaturesEMG_C1, FeaturesEMG_C2

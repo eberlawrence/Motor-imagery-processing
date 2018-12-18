@@ -44,34 +44,53 @@ f_EEG, f_EMG = P.NotchFilter(pfEEG, 60, 1024), P.NotchFilter(pfEMG, 60, 2000)
 
 
 
-s = 14
+
+A, B = P.VetorDeAmostras(tEEG,f_EEG[0])
+
+
+
+F = Features(A[0])
+
+C = F.RMS()
+
+
+
+
+
+
+
+
+
+
+
+s = 0
 P.FFT(f_EEG[s], tEEG)
 plt.show()
 
 
-#plt.plot(sEEG[10])
-##plt.plot(filtroEEG,color='g')
-##plt.plot(tEEG,color='r')
-#plt.show()
+##plt.plot(sEEG[10])
+###plt.plot(filtroEEG,color='g')
+###plt.plot(tEEG,color='r')
+##plt.show()
             
 
-##t = np.array(range(len(tEEG)))/1024
-##plt.plot(t, tEEG)
-##plt.show()
+###t = np.array(range(len(tEEG)))/1024
+###plt.plot(t, tEEG)
+###plt.show()
     
-for i, v in enumerate(sEEG):
-    plt.subplot(19,1,i+1)
-    plt.plot(sEEG[i])
-plt.show()
+#for i, v in enumerate(sEEG):
+#    plt.subplot(19,1,i+1)
+#    plt.plot(sEEG[i])
+#plt.show()
 
 
 
 
-plt.subplot(2,1,1)
-plt.plot(filtro60Hz)
-plt.plot(tEEG,color='red')
-plt.subplot(2,1,2)
-plt.plot(sEMG[0])
-plt.plot(sEMG[1])
-plt.plot(P.Amplificar(tEMG,100),color='red')
-plt.show()
+#plt.subplot(2,1,1)
+#plt.plot(filtro60Hz)
+#plt.plot(tEEG,color='red')
+#plt.subplot(2,1,2)
+#plt.plot(sEMG[0])
+#plt.plot(sEMG[1])
+#plt.plot(P.Amplificar(tEMG,100),color='red')
+#plt.show()
