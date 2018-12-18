@@ -62,3 +62,84 @@ class Processing():
         return amp # amplifica um sinal em X vezes
 
 
+    def Amostras(TriggerFinal, SINAL):
+        '''
+        Remove o tempo de repouso
+        Retorna um vetor com todas as contrações. 
+        '''
+        T = list(TriggerFinal)
+        S = list(SINAL)    
+        vetorMov, vetorRep = [], []
+
+        flagMov = True
+        tJ = int(4096)
+        count = 0
+        while count < 100:
+            for i, v in enumerate(T):
+                if v > 10 and flagMov == True:
+                    vetorMov.extend(S[i:i+tJ])
+                    flagMov = False
+                    count += 1
+                if v < 10 and flagMov == False:
+                    vetorRep.extend(S[i:i+tJ])
+                    flagMov = True
+                    count += 1
+        return vetorMov, vetorRep
+
+    def VetorDeAmostras(TriggerFinal, SINAL):
+        '''
+        Retorna o vetor com os SINAIS DE CONTRAÇÃO separados.
+        Contem uma lista com N listas. Cada lista N é uma janela de contração.
+        '''
+        sMov, sRep = Amostras(TriggerFinal, SINAL)
+        AmostraMov, AmostraRep = [], []
+        tJ = int(4096)
+        for T in range(100):
+            AmostraMov.append(sMov[0:tJ])
+            AmostraRep.append(sRep[0:tJ])
+            del sMov[0:tJ]
+            del sRep[0:tJ]
+        return AmostraMov, AmostraRep
+
+    def VetorATRIBUTOS(TriggerFinal, SINAL, Atributo, sRep=False):
+        '''
+        Retorna um vetor com os valores RMS de cada SINAL DE CONTRAÇÃO. 
+        Retorna como -Pandas.Series-
+        '''
+        aMov, aRep = VetorDeAmostras(TriggerFinal, SINAL)
+        ListaAtributos = []
+        if sRep == False:
+            A = aMov
+        elif sRep == True:
+            A = aRep
+        if Atributo == 'RMS':
+            for i, v in enumerate(A):
+                ListaAtributos.append(RMS(A[i]))
+            rms = pd.Series(ListaAtributos)
+            return rms 
+        if Atributo == 'ZC':
+            for i, v in enumerate(A):
+                ListaAtributos.append(ZC(np.array(A[i])))
+            zc = pd.Series(ListaAtributos)
+            return zc 
+        if Atributo == 'VAR':
+            for i, v in enumerate(A):
+                ListaAtributos.append(VAR(np.array(A[i])))
+            var = pd.Series(ListaAtributos)
+            return var 
+        if Atributo == 'SSC':
+            for i, v in enumerate(A):
+                ListaAtributos.append(SSC(np.array(A[i])))
+            ssc = pd.Series(ListaAtributos)
+            return ssc 
+        if Atributo == 'MAV':
+            for i, v in enumerate(A):
+                ListaAtributos.append(MAV(np.array(A[i])))
+            mav = pd.Series(ListaAtributos)
+            return mav 
+        if Atributo == 'WL':
+            for i, v in enumerate(A):
+                ListaAtributos.append(WL(np.array(A[i])))
+            wl = pd.Series(ListaAtributos)
+            return wl
+        pass
