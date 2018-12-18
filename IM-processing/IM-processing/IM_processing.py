@@ -8,6 +8,7 @@ import pandas as pd
 from scipy import signal
 from OpenFile import SinalVoluntario
 from Tools import Processing
+from TreinaValidacaoCruzada import TreinaValidacaoCruzada
 
 
 ##################################################################################################################################################################################
@@ -25,6 +26,7 @@ sVoluntario = SinalVoluntario("FHILLIPE-E")
 
 sEEG, tEEG = sVoluntario.CarregaEEG()
 sEMG, tEMG = sVoluntario.CarregaEMG()
+resp = sVoluntario.CarregaRESP()
 
 
 ##################################################################################################################################################################################

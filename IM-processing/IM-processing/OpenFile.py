@@ -5,6 +5,7 @@ class SinalVoluntario():
 
     def __init__(self, nome):
         self.nome = nome
+        pass
 
     def CarregaEEG(self):
         eegFile = pyedflib.EdfReader("EEG_coleta\\f1\\"+self.nome+".edf")
@@ -55,6 +56,23 @@ class SinalVoluntario():
             M[1].extend(c2)
             N.extend(c3)
         return np.array(M), np.array(N)
+
+    def CarregaRESP(self):        
+        M, N = [[], []], []        
+        for i in range(6):
+            dataRESP = open("Respostas\\"+self.nome+str(i+1)+"-Resposta.txt")
+            rl = dataRESP.readlines()
+            dataRESP.close()
+            k = 0 
+            resp = []
+            while k < len(rl) - 1:
+                if rl[k][0] == '[':
+                    k = k + 1
+                else:
+                    resp.append(int(rl))
+                    k = k + 1
+            M[0].extend(resp)
+        return np.array(M)
 
            
 
