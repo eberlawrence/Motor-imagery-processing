@@ -32,10 +32,13 @@ class Processing():
 
     def NotchFilter(self, data, fc=60, fs=1024, order=5, Q=1):
         # Frequência normalizada:
-        wn = fc/(fs/2) # Para o filtro NOTCH 60 Hz
-        b11, a11 = signal.iirnotch(wn, Q) # Design notch filter - Fc = 60Hz
-        filtradoRede = signal.filtfilt(b11, a11, data) # Passa um filtro NOTCH no SINAL para remover 60Hz
-        return filtradoRede
+        notch = []
+        for i in data:
+            wn = fc/(fs/2) # Para o filtro NOTCH 60 Hz
+            b11, a11 = signal.iirnotch(wn, Q) # Design notch filter - Fc = 60Hz
+            filtradoRede = signal.filtfilt(b11, a11, i) # Passa um filtro NOTCH no SINAL para remover 60Hz
+            notch.append(filtradoRede)
+        return np.array(notch)
 
     def FFT(self, data, trigger, fs=1024, aux=True):
         # Number of samplepoints

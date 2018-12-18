@@ -22,25 +22,31 @@ sVoluntario = SinalVoluntario("FHILLIPEE")
         ### Carregando os dados de EEG, EMG e Trigger ###
 ##################################################################################################################################################################################
 
+
 sEEG, tEEG = sVoluntario.CarregaEEG()
 sEMG, tEMG = sVoluntario.CarregaEMG()
 
+
+##################################################################################################################################################################################
+        ### Amplificando o valor do Trigger ###
+##################################################################################################################################################################################
+
 tEEG = P.Amplificar(tEEG, 50)
-tEMG = Tools.Amplificar(tEMG, 500)
+tEMG = P.Amplificar(tEMG, 500)
+
+
+##################################################################################################################################################################################
+        ### Filtrando os Dados com filtros Passa-Faixa (EEG -> 1 - 80 Hz , EMG -> 10 - 500 Hz) e Notch (60 Hz) ###
+##################################################################################################################################################################################
+
+pfEEG, pfEMG = P.BandPassFilter(sEEG, 1, 80, 1024), P.BandPassFilter(sEMG, 10, 500, 2000)
+f_EEG, f_EMG = P.NotchFilter(pfEEG, 60, 1024), P.NotchFilter(pfEMG, 60, 2000)
 
 
 
-
-
-
-filtroEEG = P.BandPassFilter(sEEG)
-filtro60Hz = P.NotchFilter(filtroEEG)
-
-P.FFT(s, tEEG)
-P.FFT(filtroEEG, tEEG)
-P.FFT(filtro60Hz, tEEG)
-
-
+s = 14
+P.FFT(f_EEG[s], tEEG)
+plt.show()
 
 
 #plt.plot(sEEG[10])
@@ -53,10 +59,10 @@ P.FFT(filtro60Hz, tEEG)
 ##plt.plot(t, tEEG)
 ##plt.show()
     
-##for i, v in enumerate(sEEG):
-##    plt.subplot(10,1,i+1)
-##    plt.plot(sEEG[i])
-##plt.show()
+for i, v in enumerate(sEEG):
+    plt.subplot(19,1,i+1)
+    plt.plot(sEEG[i])
+plt.show()
 
 
 
