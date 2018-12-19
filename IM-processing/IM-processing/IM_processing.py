@@ -2,6 +2,7 @@
         ### Importando os packages utilizados no código ###
 ##################################################################################################################################################################################
 
+import pywt
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -17,7 +18,7 @@ from TreinaValidacaoCruzada import TreinaValidacaoCruzada
 ##################################################################################################################################################################################
 
 P = Processing()
-sVoluntario = SinalVoluntario("FHILLIPE-I")
+sVoluntario = SinalVoluntario("FHILLIPE-E")
 
 
 ##################################################################################################################################################################################
@@ -45,13 +46,17 @@ tEMG = P.Amplificar(tEMG, 500)
 pfEEG, pfEMG = P.BandPassFilter(sEEG, 1, 80, 1024), P.BandPassFilter(sEMG, 10, 500, 2000)
 f_EEG, f_EMG = P.NotchFilter(pfEEG, 60, 1024), P.NotchFilter(pfEMG, 60, 2000)
 
+sMov, sRep = P.VetorDeAmostras(tEEG, f_EEG[0])
+P.FFT(sMov[15], tEEG, aux=False)
 
 ##################################################################################################################################################################################
         ### Carrega DataFrame com os atributos extraídos do sinal EEG ###
 ##################################################################################################################################################################################
 
-A = P.DataFrameCarac(tEEG, f_EEG, 'RMS', resp, flagResp=True)
+A = P.DataFrameCarac(tEEG, f_EEG, 'RMS')
+B = P.DataFrameCarac(tEEG, f_EEG, 'ZC')
 
+AB = pd.concat([A, B], axis=1, ignore_index=True)
 
 ##################################################################################################################################################################################
         ### Treina o classicador - Validação cruzada - 10Fold ###
@@ -68,7 +73,7 @@ print(Val1.tabelaDeClassificacao)
 
 
 
-s = 2
+s = 0
 P.FFT(f_EEG[s], tEEG)
 plt.show()
 

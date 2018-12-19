@@ -41,21 +41,24 @@ class Processing():
             notch.append(filtradoRede)
         return np.array(notch)
 
-    def FFT(self, data, trigger, fs=1024, aux=True):
+    def FFT(self, data, trigger, fs=1024, aux=True, vet=True):
         # Number of samplepoints
         N = len(data)
         t = np.array(range(N))/fs
         # sample spacing
         T = 1.0 / float(fs)
-        x = np.linspace(0.0, N*T, N)
         yf = scipy.fftpack.fft(data)
         xf = np.linspace(0.0, 1.0/(2.0*T), N/2)
+        a =  2.0/N * np.abs(yf[:N//2])
         plt.subplot(2,1,1)
         plt.plot(t, data)
         if aux:
             plt.plot(t, trigger)
         plt.subplot(2,1,2)
-        plt.plot(xf, 2.0/N * np.abs(yf[:N//2]))
+        plt.plot(xf, a)
+        if vet == True:
+            return a
+        
 
     def Amplificar(self, data, X):
         S = list(data)
@@ -68,8 +71,8 @@ class Processing():
         Remove o tempo de repouso
         Retorna um vetor com todas as contrações. 
         '''
-        T = list(TriggerFinal)
-        S = list(SINAL)    
+        T = TriggerFinal
+        S = SINAL  
         vetorMov, vetorRep = [], []
 
         flagMov = True
@@ -77,12 +80,12 @@ class Processing():
         count = 0
         while count < 120:
             for i, v in enumerate(T):
-                if v > 10 and flagMov == True:
+                if v > 10.0 and flagMov == True:
                     vetorMov.extend(S[i-tJ:i])
                     #vetorMov.extend(S[i:i+tJ])
                     flagMov = False
                     count += 1
-                if v < 10 and flagMov == False:
+                if v < 10.0 and flagMov == False:
                     vetorRep.extend(S[i:i+tJ])
                     flagMov = True
                     count += 1
