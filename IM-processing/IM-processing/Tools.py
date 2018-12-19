@@ -41,7 +41,7 @@ class Processing():
             notch.append(filtradoRede)
         return np.array(notch)
 
-    def FFT(self, data, trigger, fs=1024, aux=True, vet=True):
+    def PlotFFT(self, data, trigger, fs=1024, aux=True):
         # Number of samplepoints
         N = len(data)
         t = np.array(range(N))/fs
@@ -56,8 +56,6 @@ class Processing():
             plt.plot(t, trigger)
         plt.subplot(2,1,2)
         plt.plot(xf, a)
-        if vet == True:
-            return a
         
 
     def Amplificar(self, data, X):
@@ -150,6 +148,11 @@ class Processing():
                 ListaAtributos.append(F.WL(np.array(A[i])))
             wl = pd.Series(ListaAtributos)
             return wl
+        if Atributo == 'ALPHA_P':
+            for i, v in enumerate(A):
+                ListaAtributos.append(F.ALPHA_P(np.array(A[i])))
+            alpha_p = pd.Series(ListaAtributos)
+            return alpha_p
         pass
 
     def DataFrameCarac(self, TRIGGER, SINAL, a, resp=None, sRep=False, flagResp=False):

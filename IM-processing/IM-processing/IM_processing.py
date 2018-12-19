@@ -11,7 +11,7 @@ from OpenFile import SinalVoluntario
 from Tools import Processing
 import seaborn as sns
 from TreinaValidacaoCruzada import TreinaValidacaoCruzada
-
+from FeaturesFunctions import Features
 
 ##################################################################################################################################################################################
         ### Instanciando objetos ###
@@ -46,15 +46,13 @@ tEMG = P.Amplificar(tEMG, 500)
 pfEEG, pfEMG = P.BandPassFilter(sEEG, 1, 80, 1024), P.BandPassFilter(sEMG, 10, 500, 2000)
 f_EEG, f_EMG = P.NotchFilter(pfEEG, 60, 1024), P.NotchFilter(pfEMG, 60, 2000)
 
-sMov, sRep = P.VetorDeAmostras(tEEG, f_EEG[0])
-P.FFT(sMov[15], tEEG, aux=False)
 
 ##################################################################################################################################################################################
         ### Carrega DataFrame com os atributos extraídos do sinal EEG ###
 ##################################################################################################################################################################################
 
 A = P.DataFrameCarac(tEEG, f_EEG, 'RMS')
-B = P.DataFrameCarac(tEEG, f_EEG, 'ZC')
+B = P.DataFrameCarac(tEEG, f_EEG, 'ALPHA_P')
 
 AB = pd.concat([A, B], axis=1, ignore_index=True)
 
@@ -62,7 +60,7 @@ AB = pd.concat([A, B], axis=1, ignore_index=True)
         ### Treina o classicador - Validação cruzada - 10Fold ###
 ##################################################################################################################################################################################
 
-Val1 = TreinaValidacaoCruzada(A, resp)
+Val1 = TreinaValidacaoCruzada(B, resp)
 Val1.Parametros(mostraDivisao=False,group=False)
 print(Val1.matrizDeConfusao)
 print(Val1.tabelaDeClassificacao)
@@ -74,7 +72,7 @@ print(Val1.tabelaDeClassificacao)
 
 
 s = 0
-P.FFT(f_EEG[s], tEEG)
+P.PlotFFT(f_EEG[s], tEEG)
 plt.show()
 
 
@@ -104,3 +102,12 @@ plt.show()
 #plt.plot(sEMG[1])
 #plt.plot(P.Amplificar(tEMG,100),color='red')
 #plt.show()
+
+
+
+
+
+#sMov, sRep = P.VetorDeAmostras(tEEG, f_EEG[0])
+#F = Features()
+#a = F.ALPHA_P(sMov[0])
+#P.FFT(sMov[0], tEEG, aux=False)
