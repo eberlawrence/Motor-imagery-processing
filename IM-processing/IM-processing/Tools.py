@@ -39,30 +39,12 @@ class Processing():
             b11, a11 = signal.iirnotch(wn, Q) # Design notch filter - Fc = 60Hz
             filtradoRede = signal.filtfilt(b11, a11, i) # Passa um filtro NOTCH no SINAL para remover 60Hz
             notch.append(filtradoRede)
-        return np.array(notch)
-
-    def PlotFFT(self, data, trigger, fs=1024, aux=True):
-        # Number of samplepoints
-        N = len(data)
-        t = np.array(range(N))/fs
-        # sample spacing
-        T = 1.0 / float(fs)
-        yf = scipy.fftpack.fft(data)
-        xf = np.linspace(0.0, 1.0/(2.0*T), N/2)
-        a =  2.0/N * np.abs(yf[:N//2])
-        plt.subplot(2,1,1)
-        plt.plot(t, data)
-        if aux:
-            plt.plot(t, trigger)
-        plt.subplot(2,1,2)
-        plt.plot(xf, a)
-        
+        return np.array(notch)     
 
     def Amplificar(self, data, X):
         S = list(data)
         amp = [*map(lambda x: x*X,list(S))] #amplificar o sinal retificado
         return amp # amplifica um sinal em X vezes
-
 
     def Amostras(self, TriggerFinal, SINAL):
         '''
@@ -148,11 +130,28 @@ class Processing():
                 ListaAtributos.append(F.WL(np.array(A[i])))
             wl = pd.Series(ListaAtributos)
             return wl
+        if Atributo == 'DELTA_P':
+            for i, v in enumerate(A):
+                ListaAtributos.append(F.DELTA_P(np.array(A[i])))
+            delta_p = pd.Series(ListaAtributos)
+            return delta_p
+        if Atributo == 'THETA_P':
+            for i, v in enumerate(A):
+                ListaAtributos.append(F.THETA_P(np.array(A[i])))
+            theta_p = pd.Series(ListaAtributos)
+            return theta_p
         if Atributo == 'ALPHA_P':
             for i, v in enumerate(A):
                 ListaAtributos.append(F.ALPHA_P(np.array(A[i])))
             alpha_p = pd.Series(ListaAtributos)
             return alpha_p
+        if Atributo == 'BETA_P':
+            for i, v in enumerate(A):
+                ListaAtributos.append(F.BETA_P(np.array(A[i])))
+            beta_p = pd.Series(ListaAtributos)
+            return beta_p
+
+
         pass
 
     def DataFrameCarac(self, TRIGGER, SINAL, a, resp=None, sRep=False, flagResp=False):
@@ -163,3 +162,22 @@ class Processing():
         if flagResp == True:
             FeaturesEEG['Resposta'] = resp
         return FeaturesEEG
+
+    def FFT(self, data, fs=1024):
+        N = len(data)
+        T = 1.0 / float(fs)
+        yf = scipy.fftpack.fft(data)
+        xf = np.linspace(0.0, 1.0/(2.0*T), N/2)
+        a = list(2.0/N * np.abs(yf[:N//2]))
+        return a, xf
+
+    def PlotFFT(self, data, trigger, fs=1024, aux=True):
+        a, xf = self.FFT(data)
+        t = np.array(range(len(data)))/fs
+
+        plt.subplot(2,1,1)
+        plt.plot(t, data)
+        if aux:
+            plt.plot(t, trigger)
+        plt.subplot(2,1,2)
+        plt.plot(xf, a)   

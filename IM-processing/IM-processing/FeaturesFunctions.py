@@ -7,6 +7,14 @@ class Features:
     def __init__(self):
         pass
 
+    def FFT(self, data, fs=1024):
+        N = len(data)
+        T = 1.0 / float(fs)
+        yf = scipy.fftpack.fft(data)
+        xf = np.linspace(0.0, 1.0/(2.0*T), N/2)
+        a = list(2.0/N * np.abs(yf[:N//2]))
+        return a, xf
+
     def MAV(self, SINAL):
         mav = np.sum(SINAL)/len(SINAL)
         return float(mav)
@@ -25,18 +33,46 @@ class Features:
     def ZC(self, SINAL):
         zc = ((SINAL[:-1] * SINAL[1:]) < 0).sum()
         return float(zc)
-    def ALPHA_P(self, SINAL, fs=1024):
 
+
+
+    def DELTA_P(self, SINAL, fs=1024):
         # fft do sinal
-        N = len(SINAL)
-        T = 1.0 / float(fs)
-        yf = scipy.fftpack.fft(SINAL)
-        xf = np.linspace(0.0, 1.0/(2.0*T), N/2)
-        a = list(2.0/N * np.abs(yf[:N//2]))
+        a, xf = self.FFT(SINAL)
+        nv = []
+        for i, v in enumerate(xf):
+            if v >= 0 and v <= 3.5:
+                nv.append(a[i])
+        delta_p = np.sum(np.square(nv))
+        return delta_p
 
+    def THETA_P(self, SINAL, fs=1024):
+        # fft do sinal
+        a, xf = self.FFT(SINAL)
+        nv = []
+        for i, v in enumerate(xf):
+            if v >= 4 and v <= 7:
+                nv.append(a[i])
+        theta_p = np.sum(np.square(nv))
+        return theta_p
+
+    def ALPHA_P(self, SINAL, fs=1024):
+        # fft do sinal
+        a, xf = self.FFT(SINAL)
         nv = []
         for i, v in enumerate(xf):
             if v >= 8 and v <= 13:
                 nv.append(a[i])
         alpha_p = np.sum(np.square(nv))
         return alpha_p
+
+    def BETA_P(self, SINAL, fs=1024):
+        # fft do sinal
+        a, xf = self.FFT(SINAL)
+        nv = []
+        for i, v in enumerate(xf):
+            if v >= 14 and v <= 30:
+                nv.append(a[i])
+        beta_p = np.sum(np.square(nv))
+        return beta_p
+

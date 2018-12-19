@@ -18,7 +18,7 @@ from FeaturesFunctions import Features
 ##################################################################################################################################################################################
 
 P = Processing()
-sVoluntario = SinalVoluntario("FHILLIPE-E")
+sVoluntario = SinalVoluntario("FHILLIPE-I")
 
 
 ##################################################################################################################################################################################
@@ -51,16 +51,18 @@ f_EEG, f_EMG = P.NotchFilter(pfEEG, 60, 1024), P.NotchFilter(pfEMG, 60, 2000)
         ### Carrega DataFrame com os atributos extraídos do sinal EEG ###
 ##################################################################################################################################################################################
 
-A = P.DataFrameCarac(tEEG, f_EEG, 'RMS')
-B = P.DataFrameCarac(tEEG, f_EEG, 'ALPHA_P')
+A = P.DataFrameCarac(tEEG, f_EEG, 'DELTA_P')
+B = P.DataFrameCarac(tEEG, f_EEG, 'THETA_P')
+C = P.DataFrameCarac(tEEG, f_EEG, 'ALPHA_P')
+D = P.DataFrameCarac(tEEG, f_EEG, 'BETA_P')
 
-AB = pd.concat([A, B], axis=1, ignore_index=True)
+AB = pd.concat([A, B, C, D], axis=1, ignore_index=True)
 
 ##################################################################################################################################################################################
         ### Treina o classicador - Validação cruzada - 10Fold ###
 ##################################################################################################################################################################################
 
-Val1 = TreinaValidacaoCruzada(B, resp)
+Val1 = TreinaValidacaoCruzada(AB, resp)
 Val1.Parametros(mostraDivisao=False,group=False)
 print(Val1.matrizDeConfusao)
 print(Val1.tabelaDeClassificacao)
@@ -107,7 +109,7 @@ plt.show()
 
 
 
-#sMov, sRep = P.VetorDeAmostras(tEEG, f_EEG[0])
-#F = Features()
-#a = F.ALPHA_P(sMov[0])
-#P.FFT(sMov[0], tEEG, aux=False)
+sMov, sRep = P.VetorDeAmostras(tEEG, f_EEG[0])
+F = Features()
+a = F.ALPHA_P(sMov[0])
+P.PlotFFT(sMov[0], tEEG, aux=False)
