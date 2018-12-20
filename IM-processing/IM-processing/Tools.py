@@ -61,8 +61,8 @@ class Processing():
         while count < 120:
             for i, v in enumerate(T):
                 if v > 10.0 and flagMov == True:
-                    vetorMov.extend(S[i-tJ:i])
-                    #vetorMov.extend(S[i:i+tJ])
+                    #vetorMov.extend(S[i-tJ:i])
+                    vetorMov.extend(S[i:i+tJ])
                     flagMov = False
                     count += 1
                 if v < 10.0 and flagMov == False:

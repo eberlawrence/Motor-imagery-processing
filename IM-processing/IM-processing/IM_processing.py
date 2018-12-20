@@ -29,6 +29,7 @@ sVoluntario = SinalVoluntario("FHILLIPE-E")
 sEEG, tEEG = sVoluntario.CarregaEEG()
 sEMG, tEMG = sVoluntario.CarregaEMG()
 resp = sVoluntario.CarregaRESP()
+respDF = pd.Series(resp)
 
 
 ##################################################################################################################################################################################
@@ -57,14 +58,14 @@ C = P.DataFrameCarac(tEEG, f_EEG, 'ALPHA_P')
 D = P.DataFrameCarac(tEEG, f_EEG, 'BETA_P')
 E = P.DataFrameCarac(tEEG, f_EEG, 'POT')
 
-AB = pd.concat([A, B, C, D, E], axis=1, ignore_index=True)
+AB = pd.concat([A, B, C, D], axis=1, ignore_index=True)
 
 ##################################################################################################################################################################################
         ### Treina o classicador - Validação cruzada - 10Fold ###
 ##################################################################################################################################################################################
 
-Val1 = TreinaValidacaoCruzada(A, resp)
-Val1.Parametros(mostraDivisao=False,group=True)
+Val1 = TreinaValidacaoCruzada(AB, respDF)
+Val1.Parametros(mostraDivisao=True, group=True)
 print(Val1.matrizDeConfusao)
 print(Val1.tabelaDeClassificacao)
 #
