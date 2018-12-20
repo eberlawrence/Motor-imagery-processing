@@ -76,3 +76,8 @@ class Features:
         beta_p = np.sum(np.square(nv))
         return beta_p
 
+    def POT(self, SINAL, fs=1024):
+        # fft do sinal
+        a, xf = self.FFT(SINAL)
+        pot = np.sum(np.square(a))
+        return pot

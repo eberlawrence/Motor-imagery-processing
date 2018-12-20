@@ -150,6 +150,11 @@ class Processing():
                 ListaAtributos.append(F.BETA_P(np.array(A[i])))
             beta_p = pd.Series(ListaAtributos)
             return beta_p
+        if Atributo == 'POT':
+            for i, v in enumerate(A):
+                ListaAtributos.append(F.POT(np.array(A[i])))
+            pot = pd.Series(ListaAtributos)
+            return pot
 
 
         pass

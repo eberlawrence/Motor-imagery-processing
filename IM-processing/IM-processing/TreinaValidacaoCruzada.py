@@ -18,7 +18,7 @@ class TreinaValidacaoCruzada():
         L2 = []
         L2 = L1.copy()
         L3 = []
-        while i < 56:
+        while i < 12:
             L1.extend(L2)
             i += 1
         if group == True: 

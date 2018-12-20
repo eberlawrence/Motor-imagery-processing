@@ -18,7 +18,7 @@ from FeaturesFunctions import Features
 ##################################################################################################################################################################################
 
 P = Processing()
-sVoluntario = SinalVoluntario("FHILLIPE-I")
+sVoluntario = SinalVoluntario("FHILLIPE-E")
 
 
 ##################################################################################################################################################################################
@@ -55,20 +55,19 @@ A = P.DataFrameCarac(tEEG, f_EEG, 'DELTA_P')
 B = P.DataFrameCarac(tEEG, f_EEG, 'THETA_P')
 C = P.DataFrameCarac(tEEG, f_EEG, 'ALPHA_P')
 D = P.DataFrameCarac(tEEG, f_EEG, 'BETA_P')
+E = P.DataFrameCarac(tEEG, f_EEG, 'POT')
 
-AB = pd.concat([A, B, C, D], axis=1, ignore_index=True)
+AB = pd.concat([A, B, C, D, E], axis=1, ignore_index=True)
 
 ##################################################################################################################################################################################
         ### Treina o classicador - Validação cruzada - 10Fold ###
 ##################################################################################################################################################################################
 
-Val1 = TreinaValidacaoCruzada(AB, resp)
-Val1.Parametros(mostraDivisao=False,group=False)
+Val1 = TreinaValidacaoCruzada(A, resp)
+Val1.Parametros(mostraDivisao=False,group=True)
 print(Val1.matrizDeConfusao)
 print(Val1.tabelaDeClassificacao)
-
-
-
+#
 
 
 
