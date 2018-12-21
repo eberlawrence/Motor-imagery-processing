@@ -18,7 +18,7 @@ from FeaturesFunctions import Features
 ##################################################################################################################################################################################
 
 P = Processing()
-sVoluntario = SinalVoluntario("FHILLIPE-E")
+sVoluntario = SinalVoluntario("VINICIUS-I")
 
 
 ##################################################################################################################################################################################
@@ -37,6 +37,16 @@ s = list(np.ones(60)*2)
 r.extend(p)
 r.extend(s)
 r2.extend(s)
+
+RESP = []
+for i in range(60):
+    RESP.append('Esquerda')
+for i in range(60):
+    RESP.append('Direita')
+for i in range(60):
+    RESP.append('Repouso')
+
+RESP = np.array(RESP)
 
 ##################################################################################################################################################################################
         ### Amplificando o valor do Trigger ###
@@ -96,15 +106,38 @@ d = pd.concat([dM,dR[:60]]).reset_index(drop=True)
 AB = pd.concat([RMS,a,b,c,d], axis=1, sort=False)
 #AB.to_csv("C:\\Users\\BioLab\\Desktop\\GitHub\\Motor-imagery-processing\\IM-processing\\IM-processing\\VINICIUS-I.csv", sep=';', decimal=',')
 
+
+ED = P.NormalizaDadosCOLUNA(AB.iloc[:120].copy())
+ER = P.NormalizaDadosCOLUNA(pd.concat([AB.iloc[:60], AB.iloc[120:]]).reset_index(drop=True))
+DR = P.NormalizaDadosCOLUNA(AB.iloc[60:180].reset_index(drop=True).copy())
+
 t = pd.concat([R[:60],RR[:60]]).reset_index(drop=True)
 
 ##################################################################################################################################################################################
         ### Treina o classicador - Validação cruzada - 10Fold ###
 ##################################################################################################################################################################################
+f = pd.concat([ED.iloc[:,(11-2)],ED.iloc[:,(47-2)]], axis=1, sort=False)
+plt.scatter(ED.iloc[:,(11-2)],ED.iloc[:,(47-2)],c=r[:120])
+plt.show()
 
+# FHILLIPE
+#ED1 = ED.iloc[:,[53, 68 ]]
+#ER1 = ER.iloc[:,[45,55, 56, 76, 78, 84, 88, 89, 93]]
+#DR1 = DR.iloc[:,[76, 78, 82]]
+#ED1 = ED.iloc[:,[42, 44, 47, 54, 85]]
+#ER1 = ER.iloc[:,[10, 15, 29, 34, 48, 53, 72]]
+#DR1 = DR.iloc[:,[10, 15, 29, 34, 41, 48, 53, 72, 78, 91]]
 
-Val1 = TreinaValidacaoCruzada(R[:120], r[:120])
-Val1.Parametros(10,mostraDivisao=False, group=True)
+# Vinicius
+#ED1 = ED.iloc[:,[8, 9, 50, 53]]
+#ER1 = ER.iloc[:,[0, 1, 2, 3, 4, 5, 19, 20, 21, 22, 23, 25, 38, 39, 40, 85]]
+#DR1 = DR.iloc[:,[0, 1, 2, 3, 4, 5, 6, 16, 19, 20, 21, 22, 23, 24, 25, 26, 35, 38, 39, 40, 41, 42, 43, 44, 50, 51, 53,54,56,57, 85]]
+#ED1 = ED.iloc[:,[14, 27, 31, 34, 86, 94]]
+#ER1 = ER.iloc[:,[14, 76, 77, 80]]
+#DR1 = DR.iloc[:,[8, 9, 76, 77, 83]]
+
+Val1 = TreinaValidacaoCruzada(DR1, RESP[:120])
+Val1.Parametros(group=True, nA=False)
 print(Val1.matrizDeConfusao)
 print(Val1.tabelaDeClassificacao)
 #

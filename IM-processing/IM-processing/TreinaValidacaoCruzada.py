@@ -10,7 +10,7 @@ class TreinaValidacaoCruzada():
         self.TCarac = TABELASCarac
         self.TResp = TABELASResp
 
-    def Parametros(self, splits=10, random=True, mostraDivisao=False, plota_MC=False, group=False):
+    def Parametros(self, splits=10, random=True, mostraDivisao=False, plota_MC=False, group=False, nA=True):
         R = np.ravel(self.TResp).copy()
         DicParametros = {'C':[0.1,1,10,100,1000], 'gamma':[1,0.1,0.01,0.001]}
         i = 1
@@ -18,9 +18,14 @@ class TreinaValidacaoCruzada():
         L2 = []
         L2 = L1.copy()
         L3 = []
-        while i < 12:
-            L1.extend(L2)
-            i += 1
+        if nA == True:
+            while i < 18:
+                L1.extend(L2)
+                i += 1
+        if nA == False:
+            while i < 12:
+                L1.extend(L2)
+                i += 1
         if group == True: 
             L3 = L1.copy()
             kf = GroupKFold(n_splits=splits)

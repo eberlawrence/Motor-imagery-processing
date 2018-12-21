@@ -61,8 +61,8 @@ class Processing():
         while count < 120:
             for i, v in enumerate(T):
                 if v > 10.0 and flagMov == True:
-                    vetorMov.extend(S[i-tJ:i])
-                    #vetorMov.extend(S[i:i+tJ])
+                    #vetorMov.extend(S[i-tJ:i])
+                    vetorMov.extend(S[i:i+tJ])
                     flagMov = False
                     count += 1
                 if v < 10.0 and flagMov == False:
@@ -187,23 +187,6 @@ class Processing():
             plt.plot(t, trigger)
         plt.subplot(2,1,2)
         plt.plot(xf, a)   
-
-    def sRep80(self, Ref):
-        L = []
-        for df1 in Ref:
-            df2 = df1.mean(axis=1).sort_values(ascending=False)
-            m = df2.mean()
-            df2 = df2[df2 < df2.mean()]
-            L.extend([df2])
-        L1 = np.random.choice(L[0].index, 30, False)
-        L2 = np.random.choice(L[1].index, 30, False)    
-        return (L1, L2)
-
-    def SinalFinal(self, DF_Mov, DF_Rep, sR):
-        B1 = DF_Rep[0].drop(list(DF_Rep[0].drop(list(sR[0])).index))
-        B2 = DF_Rep[1].drop(list(DF_Rep[1].drop(list(sR[1])).index))
-        df_F = [pd.concat([DF_Mov[0], B1], ignore_index=True), pd.concat([DF_Mov[1], B2], ignore_index=True)]
-        return df_F
 
     def NormalizaDadosCOLUNA(self, DataFrame):    
         df = DataFrame.copy()
