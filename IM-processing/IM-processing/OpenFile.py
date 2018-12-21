@@ -19,16 +19,16 @@ class SinalVoluntario():
         count = 0
         for i, v in enumerate(triggerSinal):
             count = count + 1
-            if v > 10 and count < 4500:
+            if v > 10 and count < 4600:
                 triggerSinal[i] = 8 
             elif v > 10:
                 count = 0
         for i, v in enumerate(triggerSinal):
             more, less = False, False
             if v > 10:
-                if not any(triggerSinal[i - 8500 : i] > 10):
+                if not any(triggerSinal[i - 8600 : i] > 10):
                     less = True
-                if not any(triggerSinal[i + 1 : i + 8500] > 10):
+                if not any(triggerSinal[i + 1 : i + 8600] > 10):
                     more = True
                 if more and less:
                     triggerSinal[i] = 8

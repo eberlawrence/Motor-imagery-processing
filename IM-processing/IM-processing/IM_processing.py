@@ -27,45 +27,84 @@ sVoluntario = SinalVoluntario("FHILLIPE-E")
 
 
 sEEG, tEEG = sVoluntario.CarregaEEG()
-sEMG, tEMG = sVoluntario.CarregaEMG()
+#sEMG, tEMG = sVoluntario.CarregaEMG()
 resp = sVoluntario.CarregaRESP()
 respDF = pd.Series(resp)
-
+r = list(np.zeros(60))
+r2 = list(np.zeros(60))
+p = list(np.ones(60))
+s = list(np.ones(60)*2)
+r.extend(p)
+r.extend(s)
+r2.extend(s)
 
 ##################################################################################################################################################################################
         ### Amplificando o valor do Trigger ###
 ##################################################################################################################################################################################
 
+tEEG[157038] = 16
+tEEG[699563] = 16
 tEEG = P.Amplificar(tEEG, 50)
-tEMG = P.Amplificar(tEMG, 500)
+#tEMG = P.Amplificar(tEMG, 500)
 
 
 ##################################################################################################################################################################################
         ### Filtrando os Dados com filtros Passa-Faixa (EEG -> 1 - 80 Hz , EMG -> 10 - 500 Hz) e Notch (60 Hz) ###
 ##################################################################################################################################################################################
 
-pfEEG, pfEMG = P.BandPassFilter(sEEG, 1, 80, 1024), P.BandPassFilter(sEMG, 10, 500, 2000)
-f_EEG, f_EMG = P.NotchFilter(pfEEG, 60, 1024), P.NotchFilter(pfEMG, 60, 2000)
-
+pfEEG = P.BandPassFilter(sEEG, 1, 80, 1024)
+#pfEMG = P.BandPassFilter(sEMG, 10, 500, 2000)
+f_EEG = P.NotchFilter(pfEEG, 60, 1024)
+#f_EMG = P.NotchFilter(pfEMG, 60, 2000)
 
 ##################################################################################################################################################################################
         ### Carrega DataFrame com os atributos extraídos do sinal EEG ###
 ##################################################################################################################################################################################
 
-A = P.DataFrameCarac(tEEG, f_EEG, 'DELTA_P')
-B = P.DataFrameCarac(tEEG, f_EEG, 'THETA_P')
-C = P.DataFrameCarac(tEEG, f_EEG, 'ALPHA_P')
-D = P.DataFrameCarac(tEEG, f_EEG, 'BETA_P')
-E = P.DataFrameCarac(tEEG, f_EEG, 'POT')
+R = P.DataFrameCarac(tEEG, f_EEG, 'RMS', resp, flagResp=True)
+R = R.sort_values('Resposta').drop('Resposta', 1)
+RR = P.DataFrameCarac(tEEG, f_EEG, 'RMS', sRep=True)
+RMS = pd.concat([R,RR[:60]]).reset_index(drop=True)
 
-AB = pd.concat([A, B, C, D], axis=1, ignore_index=True)
+
+
+aM = P.DataFrameCarac(tEEG, f_EEG, 'DELTA_P', resp, flagResp=True)
+aM = aM.sort_values('Resposta').drop('Resposta', 1)
+aR = P.DataFrameCarac(tEEG, f_EEG, 'DELTA_P', sRep=True)
+a = pd.concat([aM,aR[:60]]).reset_index(drop=True)
+
+bM= P.DataFrameCarac(tEEG, f_EEG, 'THETA_P', resp, flagResp=True)
+bM = bM.sort_values('Resposta').drop('Resposta', 1)
+bR = P.DataFrameCarac(tEEG, f_EEG, 'THETA_P', sRep=True)
+b = pd.concat([bM,bR[:60]]).reset_index(drop=True)
+
+cM= P.DataFrameCarac(tEEG, f_EEG, 'ALPHA_P', resp, flagResp=True)
+cM = cM.sort_values('Resposta').drop('Resposta', 1)
+cR = P.DataFrameCarac(tEEG, f_EEG, 'ALPHA_P', sRep=True)
+c = pd.concat([cM,cR[:60]]).reset_index(drop=True)
+
+dM= P.DataFrameCarac(tEEG, f_EEG, 'BETA_P', resp, flagResp=True)
+dM = dM.sort_values('Resposta').drop('Resposta', 1)
+dR = P.DataFrameCarac(tEEG, f_EEG, 'BETA_P', sRep=True)
+d = pd.concat([dM,dR[:60]]).reset_index(drop=True)
+
+#eM= P.DataFrameCarac(tEEG, f_EEG, 'POT', resp, flagResp=True)
+#eM = eM.sort_values('Resposta').drop('Resposta', 1)
+#eR = P.DataFrameCarac(tEEG, f_EEG, 'POT', sRep=True)
+#e = pd.concat([eM,eR[:60]]).reset_index(drop=True)
+
+AB = pd.concat([RMS,a,b,c,d], axis=1, sort=False)
+#AB.to_csv("C:\\Users\\BioLab\\Desktop\\GitHub\\Motor-imagery-processing\\IM-processing\\IM-processing\\VINICIUS-I.csv", sep=';', decimal=',')
+
+t = pd.concat([R[:60],RR[:60]]).reset_index(drop=True)
 
 ##################################################################################################################################################################################
         ### Treina o classicador - Validação cruzada - 10Fold ###
 ##################################################################################################################################################################################
 
-Val1 = TreinaValidacaoCruzada(AB, respDF)
-Val1.Parametros(mostraDivisao=True, group=True)
+
+Val1 = TreinaValidacaoCruzada(R[:120], r[:120])
+Val1.Parametros(10,mostraDivisao=False, group=True)
 print(Val1.matrizDeConfusao)
 print(Val1.tabelaDeClassificacao)
 #
@@ -73,7 +112,32 @@ print(Val1.tabelaDeClassificacao)
 
 
 
-s = 0
+
+from sklearn.model_selection import train_test_split  
+from sklearn.svm import SVC
+from sklearn.metrics import classification_report, confusion_matrix 
+from sklearn.model_selection import cross_val_score, GridSearchCV
+
+X_train, X_test, y_train, y_test = train_test_split(AB, r, test_size = 0.40)   
+svclassifier = SVC(kernel='linear')  
+svclassifier.fit(X_train, y_train)
+y_pred = svclassifier.predict(X_test)   
+print(confusion_matrix(y_test,y_pred))  
+print(classification_report(y_test,y_pred))  
+scores = cross_val_score(svclassifier,aM, resp, cv=2)
+
+X_train, X_test, y_train, y_test = train_test_split(aM, r, test_size = 0.40)   
+param_grid = {'C':[0.1,1,10,100,1000], 'gamma':[1,0.1,0.01,0.001]}
+grid_cv = GridSearchCV(SVC(kernel='linear'), param_grid, refit=True, verbose=2)
+grid_cv.fit(X_train, y_train)
+pred = grid_cv.predict(X_test)
+print(confusion_matrix(y_test,pred)) 
+print(classification_report(y_test,pred)) 
+
+
+
+
+s = 2
 P.PlotFFT(f_EEG[s], tEEG)
 plt.show()
 
@@ -113,3 +177,19 @@ sMov, sRep = P.VetorDeAmostras(tEEG, f_EEG[0])
 F = Features()
 a = F.ALPHA_P(sMov[0])
 P.PlotFFT(sMov[0], tEEG, aux=False)
+
+
+plt.plot(sRep[3])
+plt.plot(sMov[3])
+plt.show()
+
+
+
+
+
+
+
+#bM, bR = P.DataFrameCarac(tEEG, f_EEG, 'THETA_P'), P.DataFrameCarac(tEEG, f_EEG, 'THETA_P',sRep=True)
+#cM, cR = P.DataFrameCarac(tEEG, f_EEG, 'ALPHA_P'), P.DataFrameCarac(tEEG, f_EEG, 'ALPHA_P',sRep=True)
+#dM, dR = P.DataFrameCarac(tEEG, f_EEG, 'BETA_P'), P.DataFrameCarac(tEEG, f_EEG, 'BETA_P',sRep=True)
+#eM, eR = P.DataFrameCarac(tEEG, f_EEG, 'POT'), P.DataFrameCarac(tEEG, f_EEG, 'POT',sRep=True)

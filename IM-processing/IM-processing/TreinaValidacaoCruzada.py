@@ -26,7 +26,7 @@ class TreinaValidacaoCruzada():
             kf = GroupKFold(n_splits=splits)
             kfTenFold = kf.split(self.TCarac, R, L3)            
         if group == False:
-            L3 = L1[:120].copy()
+            L3 = L1[:180].copy()
             kf = StratifiedKFold(n_splits=splits, shuffle=random)
             kfTenFold = kf.split(self.TCarac, R, L3)    
         self.grid_cv = GridSearchCV(SVC(),DicParametros, cv=kfTenFold)
